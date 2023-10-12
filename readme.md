@@ -18,7 +18,7 @@ HTML's canvas will be used to easily draw any shapes. Additioanlly, to create th
 
 ---
 
-### OBJECTS
+### Objects
 Each object is defined with:
 - type (shape)
   - circle
@@ -32,3 +32,14 @@ Each object is defined with:
 - mass
 - centre of mass -> x-, y-cooridnates of the point
 - initial position -> x-, y-cooridnates of the point
+
+Frontend
+---
+#### Approach #1
+Use vanilla html to render objects as divs in the `SimulationWindow` component with `useState` list. When the div is clicked, `ObjectMenu` is shown. The draw function will be held in the `SimulatioWindow` component. 
+
+#### Approach #2
+Use html canvas to draw objects in the `SimulationWindow` component. Compare the x-, y-coordinates with the object's boundaries in the `Object` component, and show the `ObjectMenu`.
+
+#### Approach #3
+Render divs in `SimulatioWindow` on top of the objects drawn in canvas, positioned at the same coordinates as the object, which when clicked, will show their `ObjectMenu`. Objects will be based on the component `Object`, which will used in individual shape components (ex. `Rectangle`, `Line`) with their draw functions. 

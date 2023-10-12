@@ -23,6 +23,11 @@ const Canvas = ({ windowSize }: CanvasProps) => {
     // ctx.arc(50, 100, 20 * Math.sin(frameCount * 0.05) ** 2, 0, 2 * Math.PI);
     ctx.fill();
   };
+
+  useEffect(() => {
+    ctx.fillStyle = color;
+    ctx.fillRect(position.x, position.y, size.width, size.height);
+  });
   return <div>Canvas</div>;
 };
 

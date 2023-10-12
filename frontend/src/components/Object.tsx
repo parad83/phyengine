@@ -72,9 +72,6 @@ const Object = ({ mousePos, size, ctx, childrenInputs }: ObjectProps) => {
     };
   }, [position, size, stationary]);
 
-  ctx.fillStyle = color;
-  ctx.fillRect(position.x, position.y, size.width, size.height);
-
   if (objectMenuVisible) {
     return (
       <div className="object-menu">
