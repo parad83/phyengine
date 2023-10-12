@@ -42,4 +42,4 @@ Use vanilla html to render objects as divs in the `SimulationWindow` component w
 Use html canvas to draw objects in the `SimulationWindow` component. Compare the x-, y-coordinates with the object's boundaries in the `Object` component, and show the `ObjectMenu`.
 
 #### Approach #3
-Render divs in `SimulatioWindow` on top of the objects drawn in canvas, positioned at the same coordinates as the object, which when clicked, will show their `ObjectMenu`. Objects will be based on the component `Object`, which will used in individual shape components (ex. `Rectangle`, `Line`) with their draw functions. 
+Render divs in `SimulatioWindow` on top of the objects drawn in canvas, positioned at the same coordinates as the object, which when clicked, will show their `ObjectMenu`. Objects will be based on the component `Object`, which will be used in individual shape components (ex. `Rectangle`, `Line`) with their coresponding draw functions. 
