@@ -24,10 +24,7 @@ const Canvas = ({ windowSize }: CanvasProps) => {
     ctx.fill();
   };
 
-  useEffect(() => {
-    ctx.fillStyle = color;
-    ctx.fillRect(position.x, position.y, size.width, size.height);
-  });
+  useEffect(() => {});
   return <div>Canvas</div>;
 };
 

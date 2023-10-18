@@ -19,9 +19,9 @@ const Object = ({ mousePos, size, ctx, childrenInputs }: ObjectProps) => {
   const [height, setHeight] = useState(size.height);
   const [color, setColor] = useState("#FF0000");
 
-  const [stationary, setStationary] = useState(false);
+  // const [stationary, setStationary] = useState(false);
   const [objectMenuVisible, setObjectMenuVisible] = useState(false);
-  const [position, setPosition] = useState(mousePos);
+  // const [position, setPosition] = useState(mousePos);
   // const [prevMousePos, setPrevMousePos] = useState(mousePos);
 
   const handleWidth = (event: { target: { value: number } }) => {
@@ -38,12 +38,9 @@ const Object = ({ mousePos, size, ctx, childrenInputs }: ObjectProps) => {
     setColor(event.target.value);
   };
 
-  const handleStationary = () => {
-    setStationary(!stationary);
-    // if (stationary) {
-    // setPrevMousePos(mousePos);
-    // }
-  };
+  // const handleStationary = () => {
+  //   setStationary(!stationary);
+  // };
 
   const showMenu = () => {
     setObjectMenuVisible(true);
@@ -75,8 +72,9 @@ const Object = ({ mousePos, size, ctx, childrenInputs }: ObjectProps) => {
   if (objectMenuVisible) {
     return (
       <div className="object-menu">
-        {stationary ? mousePos.x : prevMousePos.x},
-        {stationary ? mousePos.y : prevMousePos.y}
+        {/* {stationary ? mousePos.x : prevMousePos.x},
+        {stationary ? mousePos.y : prevMousePos.y} */}
+        {mousePos.x} {mousePos.y}
         <Input
           label="Color"
           type="color"
@@ -95,7 +93,7 @@ const Object = ({ mousePos, size, ctx, childrenInputs }: ObjectProps) => {
           value={height}
           onChange={handleHeight}
         />
-        <div onClick={handleStationary}>Move</div>
+        {/* <div onClick={handleStationary}>Move</div> */}
         <div onClick={hideMenu}>Close</div>
         {childrenInputs}
       </div>
