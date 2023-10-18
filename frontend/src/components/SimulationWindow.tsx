@@ -1,139 +1,118 @@
-import React, { useEffect, useRef, useState } from "react";
-import Rectangle from "./Rectangle";
+import React, { useEffect, useState } from "react";
+import { Rectangle } from "./Objects";
 
-interface SimulationWindowProps {
+interface Props {
   windowSize: { width: number; height: number };
-  // ctx: CanvasRenderingContext2D;
 }
 
-const SimulationWindow = ({ windowSize }: SimulationWindowProps) => {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+const SimulationWindow = ({ windowSize }: Props) => {
+  const [coSystem, setCoSystem] = useState({ x: 100, y: 100 });
 
-  const winMargin = 100;
-  const [coSystem, setCoSystem] = useState({ x: winMargin, y: winMargin });
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [contextMenuVisible, setContextMenuVisible] = useState(false);
+  const [clickMousePos, setClickMousePos] = useState({ x: 0, y: 0 });
 
   const [objects, setObjects] = useState([
-    { position: mousePos, size: { width: 10, height: 20 }, type: "rectangle" },
-    {
-      position: { x: 0, y: 100 },
-      size: { width: 10, height: 20 },
-      type: "rectangle",
-    },
+    { type: "rectangle", id: 1, pos: mousePos },
   ]);
+  const [objectsCounter, setObjectsCounter] = useState(2);
 
-  const boundary = {
-    minX: 0,
-    minY: 0,
-    maxX: windowSize.width,
-    maxY: windowSize.height,
+  const handleContextMenuVisible = (e) => {
+    e.preventDefault();
+    setClickMousePos(mousePos);
+    setContextMenuVisible(true);
   };
 
-  const createNewObject = () => {
+  const addObject = (newObjectType: string) => {
     const newObject = {
-      position: mousePos,
-      size: { width: 10, height: 20 },
-      type: "rectangle",
+      type: newObjectType,
+      id: objectsCounter,
+      pos: clickMousePos,
     };
-    console.log(
-      "----------------------------------------------------------------"
-    );
-    console.log(mousePos);
+    // const newObject = {
+    //   id: objectCounter,
+    //   xPos: prevMousePos.x,
+    //   yPos: prevMousePos.y,
+    //   type: newObjectType,
+    //   size: objectSize,
+    // };
+
     setObjects([...objects, newObject]);
-    // console.log(objects);
+    setObjectsCounter(objectsCounter + 1);
+    setContextMenuVisible(!contextMenuVisible);
   };
 
-  const canvasRef = useRef(null);
-
-  // const clamp = (value: number, max: number) => {
-  //   return Math.min(value, max);
-  // };
+  const deleteObject = (id: number) => {
+    const udpatedObjects = objects.filter((object) => object.id != id);
+    setObjects(udpatedObjects);
+  };
 
   useEffect(() => {
-    const handleMouseMove = (event) => {
-      setMousePos({
-        x: event.clientX,
-        y: event.clientY,
-      });
+    const handleMouseMove = (event: MouseEvent) => {
+      setMousePos({ x: event.clientX, y: event.clientY });
     };
-
-    const handleMouseDown = (event) => {
-      // console.log(mousePos);
-    };
-
-    // context.fillStyle = "#000";
-    // context.fillRect(mousePos.x - coSystem.y, mousePos.y - coSystem.y, 10, 20);
 
     document
       .getElementById("simulation-window")
       .addEventListener("mousemove", handleMouseMove);
-    document
-      .getElementById("simulation-window")
-      .addEventListener("mousedown", handleMouseDown);
 
     return () => {
       document
         .getElementById("simulation-window")
         .removeEventListener("mousemove", handleMouseMove);
-      document
-        .getElementById("simulation-window")
-        .addEventListener("mousedown", handleMouseDown);
     };
-  }, [boundary, coSystem]);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-
-    // context.clearRect(0, 0, canvas.width, canvas.height);
-
-    objects.forEach((o) => {
-      context.fillStyle = "red";
-      // console.log(o);
-      context.beginPath();
-      context.moveTo(0, 0);
-      // context.lineTo(o.position.x, o.position.y);
-      context.lineTo(o.position.x, o.position.y);
-      console.log(o.position);
-      context.stroke();
-
-      // context.fillRect(
-      //   o.position.x - coSystem.y,
-      //   o.position.y - coSystem.y,
-      //   o.size.width,
-      //   o.size.height
-      // );
-    });
-  }, [objects, coSystem]);
-
-  // const drawObject = ({}) => {
-  //   const canvas = canvasRef.current;
-  //   const ctx = canvas.getContext("2d");
-  // };
+  }, []);
 
   return (
     <div
       id="simulation-window"
+      onContextMenu={(e) => handleContextMenuVisible(e)}
+      onClick={() => setContextMenuVisible(false)}
       style={{
-        margin: winMargin,
         width: windowSize.width,
         height: windowSize.height,
         border: "1px solid black",
+        marginTop: coSystem.y,
+        marginLeft: coSystem.x,
       }}
-      onClick={createNewObject}
     >
-      <canvas
-        style={{
-          // width: windowSize,
-          // height: "",
-          border: "1px solid red",
-        }}
-        ref={canvasRef}
-      >
-        {/* <Rectangle ctx={context} position={{ x: 240, y: 200 }}>
-          {}
-        </Rectangle> */}
-      </canvas>
+      {objects.map((object) => (
+        <div key={object.id}>
+          {object.type === "rectangle" && (
+            <Rectangle
+              // updateData={() => console.log("asf")}
+              // isDrag={isDragging}
+              // sizeCallback={handleSizeCallback}
+              // delta={delta}
+              mousePos={{
+                x: object.pos.x,
+                y: object.pos.y,
+              }}
+            >
+              <div onClick={() => deleteObject(object.id)}>Delete</div>
+            </Rectangle>
+          )}
+        </div>
+      ))}
       {mousePos.x - coSystem.x}, {mousePos.y - coSystem.y}
+      {contextMenuVisible && (
+        <div
+          className="context-menu"
+          style={{ left: clickMousePos.x, top: clickMousePos.y }}
+        >
+          {/* <div onClick={() => addObject("point")}>Add PinPoint</div> */}
+          <div onClick={() => addObject("rectangle")}>Add Rectangle</div>
+          {/* <div onClick={() => addObject("rectangle")}>Add Line</div> */}
+          <div
+            onClick={() => {
+              setCoSystem({ x: clickMousePos.x, y: clickMousePos.y });
+              setContextMenuVisible(false);
+            }}
+          >
+            Set Coordinate System
+          </div>
+        </div>
+      )}
     </div>
   );
 };

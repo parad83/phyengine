@@ -19,8 +19,10 @@ const Object = ({ mousePos, size, ctx, childrenInputs }: ObjectProps) => {
   const [height, setHeight] = useState(size.height);
   const [color, setColor] = useState("#FF0000");
 
+  const [stationary, setStationary] = useState(true);
+
   // const [stationary, setStationary] = useState(false);
-  const [objectMenuVisible, setObjectMenuVisible] = useState(false);
+  const [isObjectMenuVisible, setIsObjectMenuVisible] = useState(false);
   // const [position, setPosition] = useState(mousePos);
   // const [prevMousePos, setPrevMousePos] = useState(mousePos);
 
@@ -43,11 +45,11 @@ const Object = ({ mousePos, size, ctx, childrenInputs }: ObjectProps) => {
   // };
 
   const showMenu = () => {
-    setObjectMenuVisible(true);
+    setIsObjectMenuVisible(true);
   };
 
   const hideMenu = () => {
-    setObjectMenuVisible(false);
+    setIsObjectMenuVisible(false);
   };
 
   useEffect(() => {
@@ -69,7 +71,7 @@ const Object = ({ mousePos, size, ctx, childrenInputs }: ObjectProps) => {
     };
   }, [position, size, stationary]);
 
-  if (objectMenuVisible) {
+  if (isObjectMenuVisible) {
     return (
       <div className="object-menu">
         {/* {stationary ? mousePos.x : prevMousePos.x},
