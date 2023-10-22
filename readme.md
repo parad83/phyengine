@@ -1,7 +1,7 @@
 Phyengine by me :)
 ===
 
-*branch prototype includes a working prototype lol*
+ <ins>branch prototype includes a working prototype</ins>
 
 ### Objectives
 1. Differential equation solver using Euler method or Runge-Kutta method as the engine.
