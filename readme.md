@@ -14,8 +14,9 @@ updated)
 at which the position of the object is visually shown
 
 
-to be added:
-1. more objects
+to be done/added:
+0. move websocket connection to app.tsx
+1. more objects and shapes
 2. collision between objects
 3. not constant velocity + acceleration
 4. being able to choose inital positions
@@ -25,5 +26,10 @@ to be added:
 8. visualisation of forces
 9. x-, y-axis 
 10. graphs 
+
+problems:
+* many ws connections
+* not being able to pass size to the backend to accurately calcualte any 
+collisions (whole lotta work)
 
 
