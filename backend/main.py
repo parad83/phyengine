@@ -1,88 +1,47 @@
-import numpy as np
-import math
-import matplotlib.pyplot as plt
+from flask import Flask, render_template
+from flask_socketio import SocketIO, emit, send
+from flask_cors import CORS
+import asyncio
 
-class Object:
-    def __init__(self, center_of_mass, init_pos, mass, density):
-        '''
-        Constructor for Object
+from phyengine import *
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret!'
+app.config['CORS_HEADERS'] = 'Content-Type'
+socketio = SocketIO(app, cors_allowed_origins="http://localhost:5173")
+
+CORS(app)
+
+@socketio.on('message')
+def handle_message(data):
+    print('received message: ' + data)
         
-        Parameters:
-        ----------
-            center_of_mass :int[] 
-                The center of mass of the object given in the format [x, y].
-            init_pos: int[]
-                The initial position of the object in the format [x, y].
-            mass: float 
-                The mass of the object.
-            density: float
-                The density of the object.
-        '''
-        self.center_of_mass = center_of_mass
-        self.init_pos = init_pos
-        
-    def create_shape(self, sigma=100):
-        '''
-        Create the outline of the shape given sigma
-        
-        Parameters:
-        ----------
-            sigma: int, optional
-                The number of points used to define the shape of the object. 
-        '''
-        pass
-            
-            
-        
-        
-        
+@socketio.on('json')
+def handle_json(json):
+    print('received json: ' + str(json))
     
-class Circle(Object):
-    def __init__(self, radius, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.radius = radius
+@socketio.on('simulation_run')
+def handle_run_simulation(data):
+    socketio.emit('simulation_start')
+    socketio.sleep(0)
+    runSimulation(data)
+
     
-    def create_shape(self, sigma=1):
-        self.outline_x = np.empty(0)
-        self.outline_y = np.empty(0)
-        # self.outline_x = np.zeros((int(360*sigma)))
-        # self.outline_y = np.zeros((int(360*sigma), 2))
-        for a in range(0, int(360/sigma)):
-            # x = self.radius*math.cos(a)
-            # y = self.radius*math.sin(a)
-            self.outline_x = np.append(self.outline_x)
-            self.outline_y = np.append(self.outline_y)
-            # self.outline[a] = np.array([x, y])
+def runSimulation(ic):
+    print("start")
     
-    def _x(self):
-        return self.center_of_mass[0]-self.radius*math.cos(a)
+    win = SimulationWindow(800, 800)
+    simulation = Simulation(win)
+    simulation.add_socket(socketio)
     
-    def _y(self):
-        return self.center_of_mass[1]-self.radius*math.sin(a)
+    for o in ic["objects"]:
+        # in the final version this will be abudnant; structure of the obj here will be the same as the strucutre of the object passed from react
+        obj = Object(ID=o["id"], positions=o["positions"], init_v=Vector(ic['initVel_X'], ic['initVel_Y']), mass=1, density=1)
+        simulation.add_object(obj)
         
-    def run(self, self_v):
-        pass
+    simulation.run(ic['duration'], ic['timestep'])
         
-
-            
-        
-class PinPoint(Object):
-    pass
-
-class Polygon(Object):
-    def __init__(self, no_sides, side_length,  *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.no_sides = no_sides
-        self.side_length = side_length
-        
-        
-
-c = Circle(4, [0, 0], [0, 0], 1, 1)
-
-c.create_shape()
-
-
-# plt.scatter(c.outline[:, 0], c.outline[:, 1])
-plt.plot(c.outline_x, c.outline_y)
-plt.gca().set_aspect('equal')
-plt.show()
+    print("end")
+    
+if __name__ == '__main__':
+    socketio.run(app, port=5005, debug=True)

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Rectangle } from "./Objects";
+import { Rectangle, Point } from "./Objects";
 
 interface Props {
   windowSize: { width: number; height: number };
@@ -13,7 +13,7 @@ const SimulationWindow = ({ windowSize }: Props) => {
   const [clickMousePos, setClickMousePos] = useState({ x: 0, y: 0 });
 
   const [objects, setObjects] = useState([
-    { type: "rectangle", id: 1, pos: mousePos },
+    { type: "point", id: 1, pos: mousePos },
   ]);
   const [objectsCounter, setObjectsCounter] = useState(2);
 
@@ -78,6 +78,20 @@ const SimulationWindow = ({ windowSize }: Props) => {
     >
       {objects.map((object) => (
         <div key={object.id}>
+          {object.type === "point" && (
+            <Point
+              // updateData={() => console.log("asf")}
+              // isDrag={isDragging}
+              // sizeCallback={handleSizeCallback}
+              // delta={delta}
+              mousePos={{
+                x: object.pos.x,
+                y: object.pos.y,
+              }}
+            >
+              <div onClick={() => deleteObject(object.id)}>Delete</div>
+            </Point>
+          )}{" "}
           {object.type === "rectangle" && (
             <Rectangle
               // updateData={() => console.log("asf")}
@@ -100,7 +114,7 @@ const SimulationWindow = ({ windowSize }: Props) => {
           className="context-menu"
           style={{ left: clickMousePos.x, top: clickMousePos.y }}
         >
-          {/* <div onClick={() => addObject("point")}>Add PinPoint</div> */}
+          <div onClick={() => addObject("point")}>Add PinPoint</div>
           <div onClick={() => addObject("rectangle")}>Add Rectangle</div>
           {/* <div onClick={() => addObject("rectangle")}>Add Line</div> */}
           <div

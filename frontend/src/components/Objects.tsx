@@ -54,7 +54,12 @@ export const Objects = ({
     >
       <span
         className="object-shape"
-        style={{ backgroundColor: color, width: width, ...childrenStyles }}
+        style={{
+          backgroundColor: color,
+          width: width,
+          height: width,
+          ...childrenStyles,
+        }}
         onClick={showMenu}
       ></span>
       {isObjectMenuVisible && (
@@ -110,6 +115,24 @@ export const Rectangle = ({ mousePos, children }: RectangleProps) => {
             {children}
           </>
         }
+      ></Objects>
+    </div>
+  );
+};
+
+interface PointProps {
+  mousePos: { x: number; y: number };
+  children: React.ReactNode;
+}
+
+export const Point = ({ mousePos, children }: PointProps) => {
+  return (
+    <div>
+      {" "}
+      <Objects
+        childrenStyles={{ borderRadius: "50%" }}
+        mousePos={mousePos}
+        childrenInputs={<>{children}</>}
       ></Objects>
     </div>
   );
