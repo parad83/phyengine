@@ -27,7 +27,7 @@ to be done/added:
 9. visualisation of forces
 10. x-, y-axis 
 11. graphs 
-~~12. context and object menus~~
+12. ~~context and object menus~~
 
 ---
 
