@@ -4,7 +4,7 @@
     font-family: monospace;
 }
 
-#point {
+/* #point {
     position: absolute;
     border-radius: 50%;
     background-color: red;
@@ -40,14 +40,23 @@
     height: 25px;
     background: gainsboro;
     cursor: pointer;
+} */
+
+
+.object {
+    position: absolute;
+}
+
+.pin-point {
+    position: relative;
+    border-radius: 50%;
+    background-color: red;
 }
 
 .object-menu {
-    background: lightblue;
-    /* width: 100%; */
+    border: 1px solid black;
     position: relative;
-    top: 50px;
-    left: 50px;
+    padding: 0.5rem;
 }
 
 .object-shape {
@@ -57,19 +66,47 @@
 }
 
 .context-menu {
-    background: rgb(154, 181, 203);
+    /* background: rgb(154, 181, 203); */
     position: absolute;
-    padding: 1em;
+    padding: 0.5em;
+    border: 1px solid black;
     /* color: ; */
 }
 
-.object {
-    position: absolute;
-}
-
-.simulationSettings {
+.simulation-settings {
     /* width: ; */
     /* height: 100px; */
     border: 1px solid black;
     display: inline-block;
+}
+
+.axis {
+    position: relative;
+    background-color: black;
+    opacity: 0.3;
+}
+
+.x-axis {
+    width: 100%;
+    height: 1px;
+}
+
+.y-axis {
+    width: 1px;
+    height: 100%;
+}
+
+.axis-label {
+    font-size: 11px;
+    color: black;
+    /* transform: translate(-50%, -50%); */
+    padding: 0.5em;
+}
+
+/* Create classes for x-, y-axis */
+
+.simulation-data {
+    border: 1px solid black;
+    position: absolute;
+    top: 0;
 }

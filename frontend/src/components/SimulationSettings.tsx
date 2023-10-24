@@ -1,22 +1,14 @@
 import React, { useState } from "react";
 import Input from "./Input";
 
-const SimulationSettings = ({ updateInitialConditions }) => {
-  const [initVel_X, setInitVel_X] = useState(1);
-  const [initVel_Y, setInitVel_Y] = useState(1);
+const SimulationSettings = ({ updateInitialConditions, childrenInputs }) => {
   const [duration, setDuration] = useState(10);
   const [timestep, setTimestep] = useState(1);
 
-  const handleinitVel_X = (event) => {
-    setInitVel_X(Number(event.target.value));
-  };
-  const handleInitVel_Y = (event) => {
-    setInitVel_Y(Number(event.target.value));
-  };
-  const handleDuration = (event) => {
+  const handleDuration = (event: { target: { value: any } }) => {
     setDuration(Number(event.target.value));
   };
-  const handleTimestep = (event) => {
+  const handleTimestep = (event: { target: { value: any } }) => {
     setTimestep(Number(event.target.value));
   };
 
@@ -31,24 +23,13 @@ const SimulationSettings = ({ updateInitialConditions }) => {
   };
 
   return (
-    <div className="simulationSettings">
-      <Input
-        label="initial velocity in the x-axis"
-        type="number"
-        value={initVel_X}
-        onChange={handleinitVel_X}
-      />
-      <Input
-        label="initial velocity in the y-axis"
-        type="number"
-        value={initVel_Y}
-        onChange={handleInitVel_Y}
-      />
+    <div className="simulation-settings">
       <Input
         label="duration"
         type="number"
         value={duration}
         onChange={handleDuration}
+        attributes={undefined}
       />
       <Input
         label="timestep"
@@ -57,7 +38,7 @@ const SimulationSettings = ({ updateInitialConditions }) => {
         onChange={handleTimestep}
         attributes={{ step: "0.001" }}
       />
-      <button onClick={handleRun}>Run</button>
+      {childrenInputs} <button onClick={handleRun}>Run</button>
       {/* <button onClick={handleStop}>Stop</button> */}
     </div>
   );

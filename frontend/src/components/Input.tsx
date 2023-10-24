@@ -1,17 +1,28 @@
 import React from "react";
 
-const Input = ({ label, type, value, onChange, attributes }) => {
+interface InputProps {
+  className: string;
+  label: string;
+  type: string;
+  value: any;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  attributes: Record<string, unknown>;
+}
+
+const Input = ({ label, type, value, onChange, attributes }: InputProps) => {
+  const id = label.replace(/\s+/g, "_");
+
   return (
     <>
-      <label htmlFor="#label">{label}</label>
+      <label htmlFor={id}>{label}</label>
       <input
-        id="label"
+        id={id}
         type={type}
         value={value}
         onChange={onChange}
         {...attributes}
-      ></input>
-      <br></br>
+      />
+      <br />
     </>
   );
 };
