@@ -1,12 +1,18 @@
 import React, { useState } from "react";
 import Input from "./Input";
 
-const PinPoint = ({ position, onPinPointMove }) => {
+const PinPoint = ({ position, coordinateSystem, childrenInputs }) => {
   // const [position, setPosition] = useState({ x: 100, y: 100 });
+
+  const positionInCoSystem = {
+    x: position.x - coordinateSystem.x,
+    y: position.y - coordinateSystem.y,
+  };
 
   const [width, setWidth] = useState(10);
 
   const [isVisibleMenu, setIsVisibleMenu] = useState(false);
+  // const [isDraggingObject, setIsDraggingObject] = useState(false);
   // const [isStationary, setIsStationary] = useState(true);
 
   const [initVel_X, setInitVel_X] = useState(1);
@@ -31,7 +37,10 @@ const PinPoint = ({ position, onPinPointMove }) => {
   // };
 
   return (
-    <div className="object" style={{ top: position.y, left: position.x }}>
+    <div
+      className="object"
+      style={{ top: positionInCoSystem.y, left: positionInCoSystem.x }}
+    >
       <div
         onClick={() => setIsVisibleMenu(true)}
         className="pin-point"
@@ -42,7 +51,7 @@ const PinPoint = ({ position, onPinPointMove }) => {
       ></div>
       {isVisibleMenu && (
         <div className="object-menu">
-          x: {position.x}, y: {position.y}
+          x: {positionInCoSystem.x}, y: {positionInCoSystem.y}
           <br></br>
           <Input
             label="initial velocity in the x-axis"
@@ -58,7 +67,8 @@ const PinPoint = ({ position, onPinPointMove }) => {
             onChange={handleInitVel_Y}
             attributes={undefined}
           />
-          <div onClick={onPinPointMove}>Move</div>
+          {childrenInputs}
+          {/* <div onClick={onPinPointMove}>Move</div> */}
           {/* <div onClick={() => setIsStationary(false)}>Move</div> */}
           <div onClick={() => setIsVisibleMenu(false)}>Close</div>
         </div>

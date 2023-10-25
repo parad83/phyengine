@@ -14,8 +14,6 @@ const SimulationSettings = ({ updateInitialConditions, childrenInputs }) => {
 
   const handleRun = () => {
     const initialConditions = {
-      initVel_X,
-      initVel_Y,
       duration,
       timestep,
     };

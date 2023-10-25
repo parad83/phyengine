@@ -1,51 +1,32 @@
-import React, { useEffect, useState } from "react";
-import { Rectangle, Point } from "./Objects";
+import React, { useCallback, useEffect, useState } from "react";
+import PinPoint from "./PinPoint";
+import SimulationSettings from "./SimulationSettings";
+import io from "socket.io-client";
+import Input from "./Input";
 
-interface Props {
-  windowSize: { width: number; height: number };
-}
+const SimulationWindow = ({ windowSize, objects }) => {
+  // const windowSize = (window;
 
-const SimulationWindow = ({ windowSize }: Props) => {
-  const [coSystem, setCoSystem] = useState({ x: 100, y: 100 });
+  const [axisIntervalsNumber, setAxisIntervalsNumber] = useState(10);
+  const [axisIntervalsStep, setAxisIntervalsStep] = useState(80);
+
+  const [coordinateSystem, setCoordinateSystem] = useState({
+    x: windowSize.width / 2,
+    y: windowSize.height / 2,
+  });
+
+  const [isVisibleContextMenu, setIsVisibleContextMenu] = useState(false);
+
+  const [isDraggingObject, setIsDraggingObject] = useState(false);
 
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [contextMenuVisible, setContextMenuVisible] = useState(false);
   const [clickMousePos, setClickMousePos] = useState({ x: 0, y: 0 });
 
-  const [objects, setObjects] = useState([
-    { type: "point", id: 1, pos: mousePos },
-  ]);
-  const [objectsCounter, setObjectsCounter] = useState(2);
-
-  const handleContextMenuVisible = (e) => {
-    e.preventDefault();
-    setClickMousePos(mousePos);
-    setContextMenuVisible(true);
-  };
-
-  const addObject = (newObjectType: string) => {
-    const newObject = {
-      type: newObjectType,
-      id: objectsCounter,
-      pos: clickMousePos,
-    };
-    // const newObject = {
-    //   id: objectCounter,
-    //   xPos: prevMousePos.x,
-    //   yPos: prevMousePos.y,
-    //   type: newObjectType,
-    //   size: objectSize,
-    // };
-
-    setObjects([...objects, newObject]);
-    setObjectsCounter(objectsCounter + 1);
-    setContextMenuVisible(!contextMenuVisible);
-  };
-
-  const deleteObject = (id: number) => {
-    const udpatedObjects = objects.filter((object) => object.id != id);
-    setObjects(udpatedObjects);
-  };
+  const [time, setTime] = useState(0);
+  // const [objects, setObjects] = useState([
+  // { id: 1, positions: [{ x: 100, y: 100 }] },
+  // ]);
+  // const [objectCounter, setObjectCounter] = useState(2);
 
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
@@ -53,81 +34,108 @@ const SimulationWindow = ({ windowSize }: Props) => {
     };
 
     document
-      .getElementById("simulation-window")
+      .getElementById("simulationWindow")
       .addEventListener("mousemove", handleMouseMove);
 
     return () => {
       document
-        .getElementById("simulation-window")
+        .getElementById("simulationWindow")
         .removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
 
+  // const updateInitialConditions = (data: any) => {
+  //   // setObjects([defaultInitSettings]);
+  //   const updatedData = { ...data, objects: objects };
+  //   console.log("run");
+  //   socket.emit("simulation_run", updatedData);
+  // };
+
+  const handleTime = (event: { target: { value: any } }) => {
+    setTime(Number(event.target.value));
+  };
+
+  // const handleAddObject = () => {
+  //   const newObject = { id: objectCounter, positions: [{ x: 200, y: 100 }] };
+  //   setObjects([...objects, newObject]);
+  //   setObjectCounter(objectCounter + 1);
+  // };
+
+  const handleContextMenu = (event) => {
+    event.preventDefault();
+    setClickMousePos(mousePos);
+    setIsVisibleContextMenu(!isVisibleContextMenu);
+  };
+
+  const handleSetCoordinateSystem = () => {
+    setCoordinateSystem(clickMousePos);
+    setIsVisibleContextMenu(false);
+  };
+
+  const handleDrag = useCallback((id: number) => {
+    console.log(isDraggingObject);
+    // setIsDraggingObject(true);
+    if (isDraggingObject) {
+      objects[id - 1].positions[0] = mousePos;
+    }
+  }, []);
+
+  // const handleAddObject = () => {
+  //   const newObject = { id: objects.length + 1, positions: [mousePos] };
+  //   objects = [...objects, newObject];
+  //   // console.log(objects);
+  // };
+
   return (
-    <div
-      id="simulation-window"
-      onContextMenu={(e) => handleContextMenuVisible(e)}
-      onClick={() => setContextMenuVisible(false)}
-      style={{
-        width: windowSize.width,
-        height: windowSize.height,
-        border: "1px solid black",
-        marginTop: coSystem.y,
-        marginLeft: coSystem.x,
-      }}
-    >
-      {objects.map((object) => (
-        <div key={object.id}>
-          {object.type === "point" && (
-            <Point
-              // updateData={() => console.log("asf")}
-              // isDrag={isDragging}
-              // sizeCallback={handleSizeCallback}
-              // delta={delta}
-              mousePos={{
-                x: object.pos.x,
-                y: object.pos.y,
-              }}
-            >
-              <div onClick={() => deleteObject(object.id)}>Delete</div>
-            </Point>
-          )}{" "}
-          {object.type === "rectangle" && (
-            <Rectangle
-              // updateData={() => console.log("asf")}
-              // isDrag={isDragging}
-              // sizeCallback={handleSizeCallback}
-              // delta={delta}
-              mousePos={{
-                x: object.pos.x,
-                y: object.pos.y,
-              }}
-            >
-              <div onClick={() => deleteObject(object.id)}>Delete</div>
-            </Rectangle>
-          )}
+    <>
+      {mousePos.x - coordinateSystem.x}, {mousePos.y - coordinateSystem.y}
+      <div
+        id="simulationWindow"
+        onContextMenu={handleContextMenu}
+        onClick={() => setIsDraggingObject(false)}
+        style={{
+          width: windowSize.width,
+          height: windowSize.height,
+          border: "1px solid black",
+        }}
+      >
+        <div className="axis x-axis" style={{ top: coordinateSystem.y }}>
+          <div className="axis-label">x-axis</div>
         </div>
-      ))}
-      {mousePos.x - coSystem.x}, {mousePos.y - coSystem.y}
-      {contextMenuVisible && (
-        <div
-          className="context-menu"
-          style={{ left: clickMousePos.x, top: clickMousePos.y }}
-        >
-          <div onClick={() => addObject("point")}>Add PinPoint</div>
-          <div onClick={() => addObject("rectangle")}>Add Rectangle</div>
-          {/* <div onClick={() => addObject("rectangle")}>Add Line</div> */}
+        <div className="axis y-axis" style={{ left: coordinateSystem.x }}>
+          <div className="axis-label">y-axis</div>
+        </div>
+        {isVisibleContextMenu && (
           <div
-            onClick={() => {
-              setCoSystem({ x: clickMousePos.x, y: clickMousePos.y });
-              setContextMenuVisible(false);
-            }}
+            className="context-menu"
+            style={{ left: clickMousePos.x, top: clickMousePos.y }}
           >
-            Set Coordinate System
+            <div onClick={handleSetCoordinateSystem}>Set Coordinate System</div>
+            {/* <div onClick={handleAddObject}>Add Object</div> */}
           </div>
-        </div>
-      )}
-    </div>
+        )}
+        {objects.map((obj) => (
+          <PinPoint
+            coordinateSystem={{ x: 0, y: 0 }}
+            childrenInputs={
+              <div onClick={() => setIsDraggingObject(true)}>Move</div>
+            }
+            key={obj.id}
+            position={
+              isDraggingObject
+                ? mousePos
+                : obj.positions[
+                    obj.positions.length > 1 &&
+                    time < obj.positions.length &&
+                    time >= 0
+                      ? time
+                      : 0
+                  ]
+            }
+          ></PinPoint>
+        ))}
+      </div>
+    </>
   );
 };
 
